@@ -1,0 +1,8 @@
+foreach($userfolder in (get-childitem "c:\users" -directory)){
+    New-Item -Path C:\Users\$userfolder\AppData\Roaming\Kofax -ItemType Directory -force
+	New-Item -Path C:\Users\$userfolder\AppData\Roaming\Kofax\PDF -ItemType Directory -force
+	New-Item -Path C:\Users\$userfolder\AppData\Roaming\Kofax\PDF\PowerPDF -ItemType Directory -force
+	New-Item -Path C:\Users\$userfolder\AppData\Roaming\Kofax\PDF\PowerPDF\Resource -ItemType Directory -force
+    Copy-Item C:\Users\$userfolder\AppData\Roaming\Nuance\PDF\NuancePDF\Resource\Stamps\ENU\* C:\Users\$userfolder\AppData\Roaming\Kofax\PDF\PowerPDF\Resource\ -recurse -force -ErrorAction SilentlyContinue
+    
+}
