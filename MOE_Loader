@@ -1,2 +1,30 @@
-$ScriptFromGitHub = Invoke-WebRequest https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Nuance2Kofax?token=GHSAT0AAAAAACFKEQQZ2SKJURD56LFAPPXAZGBXRRA -UseBasicParsing
+#GitHub URLs
+$PowerPlan = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/HighPerformance_Power?token=GHSAT0AAAAAACFKEQQYZZVPN7MMKXIT3K6CZGDNO2Q
+$Apps = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Remove_Win10_Apps?token=GHSAT0AAAAAACFKEQQYULCR4FQSEG3ENN2EZGDOD6A
+$Unpin = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Unpin_Win10_StartMenu?token=GHSAT0AAAAAACFKEQQZ3ISS2U3YX3IVLFIMZGDOEIQ
+$Defaults = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/MoeBuilderV8.2BASE?token=GHSAT0AAAAAACFKEQQYWR5VRWPWJ3RKQKHCZGDOEXA
+$Wallpaper = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Wallpaper?token=GHSAT0AAAAAACFKEQQY74YNI6IUA3X73IZEZGDOFBA
+
+
+#Step one - Deploy High Power Plan
+$ScriptFromGitHub = Invoke-WebRequest $PowerPlan -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
+
+#Step two - Nix Windows 10 Bloatware
+$ScriptFromGitHub = Invoke-WebRequest $Apps -UseBasicParsing
+Invoke-Expression $($ScriptFromGitHub.Content)
+
+#Step Three - Unpin Windows 10 Menus
+$ScriptFromGitHub = Invoke-WebRequest $Unpin -UseBasicParsing
+Invoke-Expression $($ScriptFromGitHub.Content)
+
+#Step Four - Nix Windows 11 Bloatware (Includes install for Chrome, Teams, Adobe and VLC)
+$ScriptFromGitHub = Invoke-WebRequest $Defaults -UseBasicParsing
+Invoke-Expression $($ScriptFromGitHub.Content)
+
+#Step Five - Deploy ADITS External Wallpaper
+$ScriptFromGitHub = Invoke-WebRequest $Wallpaper -UseBasicParsing
+Invoke-Expression $($ScriptFromGitHub.Content)
+
+#Unload - Close Session, handback to CWA
+Exit-PSSession
