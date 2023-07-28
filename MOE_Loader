@@ -1,0 +1,2 @@
+$ScriptFromGitHub = Invoke-WebRequest https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Nuance2Kofax?token=GHSAT0AAAAAACFKEQQZ2SKJURD56LFAPPXAZGBXRRA -UseBasicParsing
+Invoke-Expression $($ScriptFromGitHub.Content)
