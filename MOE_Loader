@@ -6,6 +6,24 @@ $Defaults = "https://raw.githubusercontent.com/brad-kiehne/Public/main/MoeBuilde
 $Wallpaper = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Wallpaper"
 $Win11Defaults = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Win11_Startmenu"
 
+#Build Folder Structure
+$rootpath = "C:\Moetech"
+If(!(test-path -PathType container $rootpath))
+{
+      New-Item -ItemType Directory -Path $rootpath
+}
+
+$Logpath = "C:\Moetech\Logs"
+If(!(test-path -PathType container $Logpath))
+{
+      New-Item -ItemType Directory -Path $Logpath
+}
+
+$Softwarepath = "C:\Moetech\Software"
+If(!(test-path -PathType container $Softwarepath))
+{
+      New-Item -ItemType Directory -Path $Softwarepath
+}
 
 #Step one - Deploy High Power Plan
 $ScriptFromGitHub = Invoke-WebRequest $PowerPlan -UseBasicParsing
