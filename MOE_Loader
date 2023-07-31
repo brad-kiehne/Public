@@ -4,6 +4,7 @@ $Apps = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Remove_Win10_
 $Unpin = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Unpin_Win10_StartMenu"
 $Defaults = "https://raw.githubusercontent.com/brad-kiehne/Public/main/MoeBuilderV8.2BASE"
 $Wallpaper = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Wallpaper"
+$Win11Defaults = "
 
 
 #Step one - Deploy High Power Plan
