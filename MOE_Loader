@@ -1,9 +1,9 @@
 #GitHub URLs
-$PowerPlan = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/HighPerformance_Power?token=GHSAT0AAAAAACFKEQQYZZVPN7MMKXIT3K6CZGDNO2Q
-$Apps = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Remove_Win10_Apps?token=GHSAT0AAAAAACFKEQQYULCR4FQSEG3ENN2EZGDOD6A
-$Unpin = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Unpin_Win10_StartMenu?token=GHSAT0AAAAAACFKEQQZ3ISS2U3YX3IVLFIMZGDOEIQ
-$Defaults = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/MoeBuilderV8.2BASE?token=GHSAT0AAAAAACFKEQQYWR5VRWPWJ3RKQKHCZGDOEXA
-$Wallpaper = https://raw.githubusercontent.com/brad-kiehne/PowerShell/Managed-Operating-Environment/Wallpaper?token=GHSAT0AAAAAACFKEQQY74YNI6IUA3X73IZEZGDOFBA
+$PowerPlan = https://raw.githubusercontent.com/brad-kiehne/Public/main/HighPerformance_Power
+$Apps = https://raw.githubusercontent.com/brad-kiehne/Public/main/Remove_Win10_Apps
+$Unpin = https://raw.githubusercontent.com/brad-kiehne/Public/main/Unpin_Win10_StartMenu
+$Defaults = https://raw.githubusercontent.com/brad-kiehne/Public/main/MoeBuilderV8.2BASE
+$Wallpaper = https://raw.githubusercontent.com/brad-kiehne/Public/main/Wallpaper
 
 
 #Step one - Deploy High Power Plan
