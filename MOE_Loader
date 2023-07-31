@@ -4,7 +4,7 @@ $Apps = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Remove_Win10_
 $Unpin = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Unpin_Win10_StartMenu"
 $Defaults = "https://raw.githubusercontent.com/brad-kiehne/Public/main/MoeBuilderV8.2BASE"
 $Wallpaper = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Wallpaper"
-$Win11Defaults = "
+$Win11Defaults = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Win11_Startmenu"
 
 
 #Step one - Deploy High Power Plan
@@ -25,6 +25,10 @@ Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Step Five - Deploy ADITS External Wallpaper
 $ScriptFromGitHub = Invoke-WebRequest $Wallpaper -UseBasicParsing
+Invoke-Expression $($ScriptFromGitHub.Content)
+
+#Step Six - Window 11 Specific Defaults
+$ScriptFromGitHub = Invoke-WebRequest $Win11Defaults -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Unload - Close Session, handback to CWA
