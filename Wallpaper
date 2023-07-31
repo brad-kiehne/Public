@@ -1,0 +1,10 @@
+$path = [Environment]::GetFolderPath('ApplicationData') + "\ADITS"
+If(!(test-path $path))
+{
+      New-Item -ItemType Directory -Force -Path $path
+}
+$url = "https://adits.blob.core.windows.net/automate/Intune/ADITS.jpg"
+$output = $path + "\ADITS.jpg"
+Start-BitsTransfer -Source $url -Destination $output
+Set-ItemProperty -path 'HKCU:\Control Panel\Desktop\' -name wallpaper -value $output
+rundll32.exe user32.dll, UpdatePerUserSystemParameters
