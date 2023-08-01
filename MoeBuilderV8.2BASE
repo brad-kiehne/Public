@@ -4201,4 +4201,4 @@ Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scr
 C:\Moetech\Software\3PP\PatchMyPC.exe /silent
 
 #Push Dell Command Updates
-"C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" /applyUpdates -silent
+& "C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" /applyUpdates -silent
