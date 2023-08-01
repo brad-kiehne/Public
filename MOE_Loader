@@ -5,6 +5,7 @@ $Unpin = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Unpin_Win10_
 $Defaults = "https://raw.githubusercontent.com/brad-kiehne/Public/main/MoeBuilderV8.2BASE"
 $Wallpaper = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Wallpaper"
 $Win11Defaults = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Win11_Startmenu"
+$OEMFix = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Dell_Optimizer_Uninstall"
 
 #Build Folder Structure
 $rootpath = "C:\Moetech"
@@ -24,6 +25,13 @@ If(!(test-path -PathType container $Softwarepath))
 {
       New-Item -ItemType Directory -Path $Softwarepath
 }
+
+$ODTpath = "C:\Moetech\ODT"
+If(!(test-path -PathType container $ODTpath))
+{
+      New-Item -ItemType Directory -Path $ODTpath
+}
+
 
 #Step one - Deploy High Power Plan
 $ScriptFromGitHub = Invoke-WebRequest $PowerPlan -UseBasicParsing
@@ -47,6 +55,10 @@ Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Step Six - Window 11 Specific Defaults
 $ScriptFromGitHub = Invoke-WebRequest $Win11Defaults -UseBasicParsing
+Invoke-Expression $($ScriptFromGitHub.Content)
+
+#Step Seven - OEM Specific Fix
+$ScriptFromGitHub = Invoke-WebRequest $OEMFix -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Unload - Close Session, handback to CWA
