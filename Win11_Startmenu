@@ -7,3 +7,5 @@ $usersStartMenu = get-childitem -path "C:\Users\*\AppData\Local\Packages\Microso
 ForEach ($startmenu in $usersStartMenu) {
   Copy-Item -Path $startmenuTemplate -Destination $startmenu -Force
 }
+#Restart Start Menu Experince
+Stop-Process -Name StartMenuExperienceHost -Force
