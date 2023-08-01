@@ -1,15 +1,16 @@
 # Replace "C:\Temp\Example" with the path to the folder you want to check
-if (Test-Path "C:\Program Files\Dell\DellOptimizer\") {
+$DELLOPpath = "C:\Program Files\Dell\DellOptimizer"
+
+If(test-path -Path $DELLOPpath) {
     # Folder exists - Do something here
     Write-host "DellOptimizer Exists!" -f Green
     taskkill /IM DellOptimizer /F
-    "C:\Program Files\Dell\DellOptimizer\DellOptimizer.exe" /remove /silent
-    "C:\Program Files (x86)\InstallShield Installation Information\{286A9ADE-A581-43E8-AA85-6F5D58C7DC88}\DellOptimizer.exe" /remove /silent
-    "C:\Program Files (x86)\InstallShield Installation Information\{286A9ADE-A581-43E8-AA85-6F5D58C7DC88}\DellOptimizer.exe" -remove -silent
+    & "C:\Program Files\Dell\DellOptimizer\DellOptimizer.exe" /remove /silent
+    & "C:\Program Files (x86)\InstallShield Installation Information\{286A9ADE-A581-43E8-AA85-6F5D58C7DC88}\DellOptimizer.exe" /remove /silent
+    & "C:\Program Files (x86)\InstallShield Installation Information\{286A9ADE-A581-43E8-AA85-6F5D58C7DC88}\DellOptimizer.exe" -remove -silent
 
 }
 else {
     # Folder does not exist - Do something else here
     Write-host "DellOptimizer Folder Doesn't Exists!" -f Red
-    Exit-PSSession
 }
