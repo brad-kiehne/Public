@@ -68,4 +68,3 @@ $ScriptFromGitHub = Invoke-WebRequest $OEMFix -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Unload - Close Session, handback to CWA
-Exit-PSSession
