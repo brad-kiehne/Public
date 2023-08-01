@@ -4190,6 +4190,7 @@ Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scr
 C:\Moetech\ODT\setup.exe /configure C:\Moetech\ODT\uninstallO365.xml
 
 #Download ODT cahce and extract
+$ProgressPreference = 'SilentlyContinue'
 Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/Office/ODT.exe" -OutFile "C:\Moetech\ODT\ODT.exe"
 C:\Moetech\ODT\ODT.exe
 
