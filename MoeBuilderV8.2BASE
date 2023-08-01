@@ -4179,3 +4179,16 @@ If ($args) {
 
 # Call the desired tweak functions
 $tweaks | ForEach { Invoke-Expression $_ }
+
+#Download Uninstall Config XML
+Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/Office/uninstallO365.xml" -OutFile "C:\Moetech\ODT\uninstallO365.xml"
+
+#Download ODT setup Executable
+Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/Office/setup.exe" -OutFile "C:\Moetech\ODT\setup.exe"
+
+#Remove Any version of Office
+C:\Moetech\ODT\setup.exe /configure C:\Moetech\ODT\uninstallO365.xml
+
+#Download ODT cahce and extract
+Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/Office/ODT.exe" -OutFile "C:\Moetech\ODT\ODT.exe"
+C:\Moetech\ODT\ODT.exe
