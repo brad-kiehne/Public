@@ -32,6 +32,12 @@ If(!(test-path -PathType container $ODTpath))
       New-Item -ItemType Directory -Path $ODTpath
 }
 
+$3PPpath = "C:\Moetech\Software\3PP"
+If(!(test-path -PathType container $3PPpath))
+{
+      New-Item -ItemType Directory -Path $3PPpath
+}
+
 
 #Step one - Deploy High Power Plan
 $ScriptFromGitHub = Invoke-WebRequest $PowerPlan -UseBasicParsing
@@ -45,7 +51,7 @@ Invoke-Expression $($ScriptFromGitHub.Content)
 $ScriptFromGitHub = Invoke-WebRequest $Unpin -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
-#Step Four - Nix Windows 11 Bloatware (Includes install for Chrome, Teams, Adobe and VLC)
+#Step Four - Nix Windows 11 Bloatware (Includes install for Office365, Chrome, Teams, Adobe, VLC and PMPC)
 $ScriptFromGitHub = Invoke-WebRequest $Defaults -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
