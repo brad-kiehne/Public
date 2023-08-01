@@ -4192,3 +4192,13 @@ C:\Moetech\ODT\setup.exe /configure C:\Moetech\ODT\uninstallO365.xml
 #Download ODT cahce and extract
 Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/Office/ODT.exe" -OutFile "C:\Moetech\ODT\ODT.exe"
 C:\Moetech\ODT\ODT.exe
+
+#Download Patch My PC
+Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/V8/PatchMyPC.exe" -OutFile "C:\Moetech\Software\3PP\PatchMyPC.exe"
+
+#Download Config INI for PMPC and Run
+Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/V8/PatchMyPC.ini" -OutFile "C:\Moetech\Software\3PP\PatchMyPC.ini"
+C:\Moetech\Software\3PP\PatchMyPC.exe /silent
+
+#Push Dell Command Updates
+"C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" /applyUpdates -silent
