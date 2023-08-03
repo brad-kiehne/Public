@@ -1,3 +1,22 @@
+# Set log file path
+$logFile = "C:\Moetech\sLogs\$env:computername-process.log"
+
+Function Write-Log {
+    param(
+        [Parameter(Mandatory = $true)][string] $message,
+        [Parameter(Mandatory = $false)]
+        [ValidateSet("INFO","WARN","ERROR")]
+        [string] $level = "INFO"
+    )
+
+    # Create timestamp
+    $timestamp = (Get-Date).toString("yyyy/MM/dd HH:mm:ss")
+
+    # Append content to log file
+    Add-Content -Path $logFile -Value "$timestamp [$level] - $message"
+}
+
+Write-Log -level ERROR -message "String failed to be a string"
 Get-AppxPackage -AllUsers | Remove-AppxPackage
 echo "Elevating privileges for this process"
 do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
