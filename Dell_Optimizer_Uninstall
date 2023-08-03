@@ -1,9 +1,11 @@
+Log-Message: "Step Seven Loaded, OEM tweaks"
 # Replace "C:\Temp\Example" with the path to the folder you want to check
+Log-Message: "Searching for DellOptimizer"
 $DELLOPpath = "C:\Program Files\Dell\DellOptimizer"
 
 If(test-path -Path $DELLOPpath) {
     # Folder exists - Do something here
-    Write-host "DellOptimizer Exists!" -f Green
+    Log-Message: "DellOptimizer Exists!"
     taskkill /IM DellOptimizer /F
     & "C:\Program Files\Dell\DellOptimizer\DellOptimizer.exe" /remove /silent
     & "C:\Program Files (x86)\InstallShield Installation Information\{286A9ADE-A581-43E8-AA85-6F5D58C7DC88}\DellOptimizer.exe" /remove /silent
@@ -12,5 +14,6 @@ If(test-path -Path $DELLOPpath) {
 }
 else {
     # Folder does not exist - Do something else here
-    Write-host "DellOptimizer Folder Doesn't Exists!" -f Red
+    Log-Message: "DellOptimizer Folder Doesn't Exists!"
 }
+Log-Message: "Step Seven Completed, handing back to loader"

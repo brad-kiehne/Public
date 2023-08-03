@@ -1,3 +1,4 @@
+Log-Message "Step Two Loaded, Preparing for App Removal"
 Get-AppxPackage -AllUsers | Remove-AppxPackage
 Log-Message "Elevating privileges for this process"
 do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
@@ -120,10 +121,11 @@ $apps = @(
     #"Microsoft.XboxIdentityProvider"
     #"Windows.ContactSupport"
 )
-
+Log-Message: "Third-Pary application list processed"
 foreach ($app in $apps) {
         Write-Verbose -Message ('Removing Package {0}' -f $App)
         Get-AppxPackage -Name $App | Remove-AppxPackage -ErrorAction SilentlyContinue
         Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
         Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
 }
+Log-Message: "Third-Pary application removal processed"

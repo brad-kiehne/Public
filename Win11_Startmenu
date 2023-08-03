@@ -1,3 +1,4 @@
+Log-Message: "Step Six Loaded, Windows 11 Startmenu layout"
 # Source start menu template
 Invoke-WebRequest -Uri "https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/V9/start2.bin" -OutFile "C:\Moetech\start2.bin"
 $startmenuTemplate = "C:\Moetech\start2.bin"
@@ -9,3 +10,4 @@ ForEach ($startmenu in $usersStartMenu) {
 }
 #Restart Start Menu Experince
 Stop-Process -Name StartMenuExperienceHost -Force
+Log-Message: "Startmenu adjusted - Restart needed"
