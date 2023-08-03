@@ -1,4 +1,3 @@
-start-transcript
 #Log Function
 Function Log-Message()
 {
@@ -112,4 +111,3 @@ Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Unload - Close Session, handback to CWA
 Log-Message "Loader Completed, Handing back to CWA Script Engine"
-stop-transcript
