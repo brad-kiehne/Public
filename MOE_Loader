@@ -74,40 +74,40 @@ If(!(test-path -PathType container $3PPpath))
 }
 
 
-#Step one - Deploy High Power Plan
-Log-Message "Deploy Power Plan"
+#Step one - Deploy High-Performance Power Plan
+Log-Message "Loading Step One: High-Performance Power Plan Configuration"
 $ScriptFromGitHub = Invoke-WebRequest $PowerPlan -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Step two - Nix Windows 10 Bloatware
-Log-Message "Windows 10 Third Party App Removal"
+Log-Message "Loading Step Two: Windows 10 Third Party App Removal"
 $ScriptFromGitHub = Invoke-WebRequest $Apps -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Step Three - Unpin Windows 10 Menus
-Log-Message "Unpinning Windows 10/11 Start Menu Items"
+Log-Message "Loading Step Three: Unpinning Windows 10/11 Start Menu Items"
 $ScriptFromGitHub = Invoke-WebRequest $Unpin -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
-#Step Four - Nix Windows 11 Bloatware (Includes install for Office365, Chrome, Teams, Adobe, VLC and PMPC)
-Log-Message "Removing Windows 11 Third Party Apps and Updating Office365, Chrome, Teams, Adobe, VLC and PMPC"
+#Step Four - Nix Windows 11 Bloatware (Includes installation for Office365, Chrome, Teams, Adobe, VLC and PMPC)
+Log-Message "Loading Step 4 Removing Windows 11 Third-Party Apps and Updating Office365, Chrome, Teams, Adobe, VLC and PMPC"
 $ScriptFromGitHub = Invoke-WebRequest $Defaults -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Step Five - Deploy ADITS External Wallpaper
-Log-Message "Pushing ADITS External Desktop Background"
+Log-Message "Loading Step Five: Pushing ADITS External Desktop Background"
 $ScriptFromGitHub = Invoke-WebRequest $Wallpaper -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Step Six - Window 11 Specific Defaults
-Log-Message "Pushing Windows 11 Specific Defaults"
+Log-Message "Loading Step Six: Pushing Windows 11 Specific Defaults"
 $ScriptFromGitHub = Invoke-WebRequest $Win11Defaults -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Step Seven - OEM Specific Fix
-Log-Message "DELL OEM Fixes applied"
+Log-Message "Loading Step Seven: DELL OEM Fixes applied"
 $ScriptFromGitHub = Invoke-WebRequest $OEMFix -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
 
 #Unload - Close Session, handback to CWA
-Log-Message "Loader Completed, Handing back to CWA Script Engine"
+Log-Message "Loader Completed all steps, Handing back to CWA Script Engine"
