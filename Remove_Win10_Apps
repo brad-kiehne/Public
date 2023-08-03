@@ -1,5 +1,5 @@
 # Set log file path
-$logFile = "C:\Moetech\sLogs\$env:computername-process.log"
+$logFile = "C:\Moetech\Logs\$env:computername-process.log"
 
 Function Write-Log {
     param(
