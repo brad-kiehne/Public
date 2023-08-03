@@ -1,8 +1,8 @@
 Get-AppxPackage -AllUsers | Remove-AppxPackage
-echo "Elevating privileges for this process"
+Log-Message "Elevating privileges for this process"
 do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
 
-echo "Uninstalling default apps"
+Log-Message "Uninstalling default apps"
 $apps = @(
     # default Windows 10 apps
     "Microsoft.3DBuilder"
