@@ -1,5 +1,4 @@
- Get-AppxPackage -AllUsers | Remove-AppxPackage
-
+Get-AppxPackage -AllUsers | Remove-AppxPackage
 echo "Elevating privileges for this process"
 do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
 
@@ -34,6 +33,32 @@ $apps = @(
     "Microsoft.ZuneVideo"
     "microsoft.windowscommunicationsapps"
     "Microsoft.MinecraftUWP"
+     "*Microsoft.BingNews*"
+     "*Microsoft.GetHelp*"
+      "*Microsoft.Getstarted*"
+      "*Microsoft.Messaging*"
+      "*Microsoft.Microsoft3DViewer*"
+      "*Microsoft.MicrosoftOfficeHub*"
+      "*Microsoft.MicrosoftSolitaireCollection*"
+      "*Microsoft.NetworkSpeedTest*"
+      "*Microsoft.Office.Sway*"
+      "*Microsoft.OneConnect*"
+      "*Microsoft.People*"
+      "*Microsoft.Print3D*"
+      "*Microsoft.SkypeApp*"
+      "*Microsoft.WindowsAlarms*"
+      "*Microsoft.WindowsCamera*"
+      "*microsoft.windowscommunicationsapps*"
+      "*Microsoft.WindowsFeedbackHub*"
+      "*Microsoft.WindowsMaps*"
+      "*Microsoft.WindowsSoundRecorder*"
+      "*Microsoft.Xbox.TCUI*"
+      "*Microsoft.XboxApp*"
+      "*Microsoft.XboxGameOverlay*"
+      "*Microsoft.XboxIdentityProvider*"
+      "*Microsoft.XboxSpeechToTextOverlay*"
+      "*Microsoft.ZuneMusic*"
+      "*Microsoft.ZuneVideo*"
 
     # Threshold 2 apps
     "Microsoft.CommsPhone"
@@ -71,6 +96,20 @@ $apps = @(
     "Facebook.Facebook"
     "flaregamesGmbH.RoyalRevolt2"
     "Playtika.CaesarsSlotsFreeCasino"
+        
+#Sponsored Windows 10 AppX Apps
+        #Add sponsored/featured apps to remove in the "*AppName*" format
+        "*EclipseManager*"
+        "*ActiproSoftwareLLC*"
+        "*AdobeSystemsIncorporated.AdobePhotoshopExpress*"
+        "*Duolingo-LearnLanguagesforFree*"
+        "*PandoraMediaInc*"
+        "*CandyCrush*"
+        "*Wunderlist*"
+        "*Flipboard*"
+        "*Twitter*"
+        "*Facebook*"
+        "*Spotify*"
 
     # apps which cannot be removed using Remove-AppxPackage
     #"Microsoft.BioEnrollment"
@@ -83,13 +122,10 @@ $apps = @(
 )
 
 foreach ($app in $apps) {
-    echo "Trying to remove $app"
-
-    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage
-
-    Get-AppXProvisionedPackage -Online |
-        where DisplayName -EQ $app |
-        Remove-AppxProvisionedPackage -Online
+        Write-Verbose -Message ('Removing Package {0}' -f $App)
+        Get-AppxPackage -Name $App | Remove-AppxPackage -ErrorAction SilentlyContinue
+        Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
+        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
 }
 
 # Prevents "Suggested Applications" returning
