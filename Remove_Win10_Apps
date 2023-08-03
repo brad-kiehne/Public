@@ -131,11 +131,3 @@ foreach ($app in $apps) {
 # Prevents "Suggested Applications" returning
 force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
 sp "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content" "DisableWindowsConsumerFeatures" 1
-
-    Write-Output "Unpinning all tiles from the start menu"
-    (New-Object -Com Shell.Application).
-    NameSpace('shell:::{4234d49b-0245-4df3-b780-3893943456e1}').
-    Items() |
-    %{ $_.Verbs() } |
-    ?{$_.Name -match 'Un.*pin from Start'} |
-    %{$_.DoIt()}
