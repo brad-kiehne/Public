@@ -1,4 +1,5 @@
 Log-Message: "Step Four Loaded, Baseline Windows 11 configuration"
+
 $tweaks = @(
 	# Require administrator privileges
 
@@ -4213,4 +4214,5 @@ Start-Process -FilePath "C:\Moetech\Software\3PP\PatchMyPC.exe" -ArgumentList "/
 #Push Dell Command Updates
 Log-Message: "Apply Dell Command Updates"
 & "C:\Program Files\Dell\CommandUpdate\dcu-cli.exe" /applyUpdates -silent
+
 Log-Message: "Steps completed, handing back to loader"

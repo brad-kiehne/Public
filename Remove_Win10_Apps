@@ -122,10 +122,10 @@ $apps = @(
     #"Windows.ContactSupport"
 )
 Log-Message: "Third-Pary application list processed"
+
 foreach ($app in $apps) {
-        Write-Verbose -Message ('Removing Package {0}' -f $App)
-        Get-AppxPackage -Name $App | Remove-AppxPackage -ErrorAction SilentlyContinue
-        Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue
-        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue
+        Get-AppxPackage -Name $App | Remove-AppxPackage 
+        Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers
+        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online
 }
 Log-Message: "Third-Pary application removal processed"
