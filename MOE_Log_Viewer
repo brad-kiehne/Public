@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<hta:application 
+   APPLICATIONNAME="MOEBUILDERv9"
+   ID="MOEBUILDERv9"
+   BORDERSTYLE="None"
+   CAPTION="No"
+   CONTEXTMENU="No"
+   INNERBORDER="No"
+   MAXIMIZEBUTTON="No"
+   MINIMIZEBUTTON="No"
+   NAVIGABLE="No"
+   SCROLL="No"
+   SCROLLFLAT="No"
+   SELECTION="No"
+   SHOWINTASKBAR="No"
+   MENUBAR="No"
+   SINGLEINSTANCE="Yes"
+   SYSMENU="No" ONTOP="Yes" WINDOWSTATE="Maximize"
+   />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOEBUILDERv9</title>
+<style>
+    html, body {
+        background-image: url("https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/aditstrim.jpg");
+        background-color: #000033;
+        height: 100%;
+        font-size: 90%;
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Hide scrollbars */
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+        .bg {
+ 
+  /* Center and scale the image nicely */
+
+    }
+
+    h1 {
+        font-family: Arial;
+        color: #007cd1;
+        font-size: 3em;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    h2 {
+        font-family: Arial;
+        color: #fff;
+        font-size: 1.5em;
+        text-align: center;
+    }
+
+    h3 {
+        font-family: Arial;
+        color: #666;
+        font-size: 1em;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+</style>
+
+<script type="text/javascript">
+    var count = 60; // seconds
+    var counter;
+
+    function timer() {
+        count = count - 1;
+        if (count <= 0) {
+            clearInterval(counter);
+            window.close(); // Close the HTA window after the countdown.
+            return;
+        }
+        document.getElementById("timer").innerHTML = count + " secs"; // Display the remaining time in the span tag.
+    }
+
+    function onLoadHandler() {
+        window.moveTo(0, 0); // Move the window to the top-left corner
+        window.resizeTo(screen.width, screen.height); // Set the window size to fullscreen
+        counter = setInterval(timer, 1000); // Start the timer
+    }
+
+    window.setInterval("reloadIFrame();", 30000);
+    
+    function reloadIFrame() {
+     document.frames["list"].location.reload();
+    }
+    window.onload = function() {
+        onLoadHandler();
+    };
+
+</script>
+</head>
+<body>
+    <h1>MOE Builder</h1>
+    <h2>Version 9</h2>
+    <h3>ADITS - [auto close in <span id="timer"></span> ]</h3>
+	<p>&nbsp;</p>
+<p>README.txt</p>
+<p>&nbsp;</p>
+<div id="list">
+  <p align="center"><iframe src="11082023.txt" frameborder="0" height="400" width="95%" ></iframe></p>
+
+</div>
+</body>
+</html>
