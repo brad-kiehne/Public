@@ -71,8 +71,7 @@ If(!(test-path -PathType container $3PPpath))
 }
 
 Log-Message "Loading MOE Log Viewer"
-$DesktopPath = [Environment]::GetFolderPath("Desktop")
-Invoke-WebRequest -Uri "$MOE_LV" -OutFile "$DesktopPath\MOE_Log_Viewer.hta"
+Invoke-WebRequest -Uri "$MOE_LV" -OutFile "$Logpath\MOE_Log_Viewer.hta"
 
 #Step one - Deploy High-Performance Power Plan
 Log-Message "Loading Step One: High-Performance Power Plan Configuration"
