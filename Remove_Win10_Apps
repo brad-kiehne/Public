@@ -121,6 +121,7 @@ $apps = @(
     #"Microsoft.XboxIdentityProvider"
     #"Windows.ContactSupport"
 )
+
 Log-Message: "Third-Pary application list processed"
 
 foreach ($app in $apps) {
