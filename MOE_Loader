@@ -29,6 +29,7 @@ Function Log-Message()
     }
 }
 #GitHub URLs
+$MOE_LV = "https://raw.githubusercontent.com/brad-kiehne/Public/main/MOE_Log_Viewer"
 $PowerPlan = "https://raw.githubusercontent.com/brad-kiehne/Public/main/HighPerformance_Power"
 $Apps = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Remove_Win10_Apps"
 $Unpin = "https://raw.githubusercontent.com/brad-kiehne/Public/main/Unpin_Win10_StartMenu"
@@ -69,6 +70,9 @@ If(!(test-path -PathType container $3PPpath))
       New-Item -ItemType Directory -Path $3PPpath
 }
 
+Log-Message "Loading MOE Log Viewer"
+$DesktopPath = [Environment]::GetFolderPath("Desktop")
+Invoke-WebRequest -Uri "$MOE_LV" -OutFile "$DesktopPath\MOE_Log_Viewer.hta"
 
 #Step one - Deploy High-Performance Power Plan
 Log-Message "Loading Step One: High-Performance Power Plan Configuration"
