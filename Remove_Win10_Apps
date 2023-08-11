@@ -1,7 +1,5 @@
 Log-Message "Step Two Loaded, Preparing for App Removal"
 Get-AppxPackage -AllUsers | Remove-AppxPackage
-Log-Message "Elevating privileges for this process"
-do {} until (Elevate-Privileges SeTakeOwnershipPrivilege)
 
 Log-Message "Uninstalling default apps"
 $apps = @(
