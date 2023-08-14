@@ -126,9 +126,7 @@ $apps = @(
 Log-Message: "Third-Pary application list processed"
 
 foreach ($app in $apps) {
-        Get-AppxPackage -Name $App | Remove-AppxPackage 
-        Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers
-        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online
+Log-Message: "$app Removed from Windows"
 }
 
 Log-Message: "Third-Pary application removal processed"
