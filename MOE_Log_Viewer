@@ -106,7 +106,6 @@
 <p>&nbsp;</p>
 <div id="list">
   <p align="center"><iframe src="11082023.txt" style="position:absolute; bottom:50px; height:100px; width:100%; border:1px solid #000000" scrolling="yes" frameborder="0"></iframe></p>
-  document.getElementById('iframeid').src = document.getElementById('iframeid').src
 
 </div>
 </body>
