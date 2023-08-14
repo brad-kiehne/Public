@@ -1,35 +1,4 @@
-#Log Function
-Function Log-Message()
-{
- param
-    (
-    [Parameter(Mandatory=$true)] [string] $Message
-    )
- 
-    Try {
-        #Get the current date
-        $LogDate = (Get-Date).tostring("ddMMyyyy")
- 
-        #Get the Location of the script
-
-      $LogDir = "C:\Moetech\Logs\"
-
-        #Frame Log File with Current Directory and date
-        $LogFile = $LogDir+ "\" + $LogDate + ".txt"
- 
-        #Add Content to the Log File
-        $TimeStamp = (Get-Date).toString("dd/MM/yyyy HH:mm:ss:fff tt")
-        $Line = "$TimeStamp - $Message"
-        Add-content -Path $Logfile -Value $Line
- 
-        Write-host "Message: '$Message' Has been Logged to File: $LogFile"
-    }
-    Catch {
-        Write-host -f Red "Error:" $_.Exception.Message 
-    }
-}
 Log-Message "Step Two Loaded, Preparing for App Removal"
-Get-AppxPackage -AllUsers | Remove-AppxPackage
 
 Log-Message "Uninstalling default apps"
 $apps = @(
@@ -123,10 +92,13 @@ $apps = @(
     "*Spotify*"
 )
 
-Log-Message: "Third-Pary application list processed"
+Log-Message "Third-Pary application list processed"
 
 foreach ($app in $apps) {
-Log-Message: "$app Removed from Windows"
+        Get-AppxPackage -Name $App | Remove-AppxPackage 
+        Get-AppxPackage -Name $App -AllUsers | Remove-AppxPackage -AllUsers
+        Get-AppxProvisionedPackage -Online | Where-Object DisplayName -like $App | Remove-AppxProvisionedPackage -Online
+        Log-Message "Removed $app from Windows"
 }
 
-Log-Message: "Third-Pary application removal processed"
+Log-Message "Third-Pary application removal processed"
