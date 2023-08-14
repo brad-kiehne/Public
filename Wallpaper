@@ -1,4 +1,4 @@
-Log-Message: "Step Five Loaded, Pushing Desktop Background"
+Log-Message "Step Five Loaded, Pushing Desktop Background"
 $path = [Environment]::GetFolderPath('ApplicationData') + "\ADITS"
 If(!(test-path $path))
 {
