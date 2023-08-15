@@ -106,16 +106,8 @@ If(!(test-path -PathType container $3PPpath))
       New-Item -ItemType Directory -Path $3PPpath
 }
 
-<<<<<<< Updated upstream
 Log-Message "Loading MOE Log Viewer"
 #Invoke-WebRequest -Uri "$MOE_LV" -OutFile "$Logpath\MOE_Log_Viewer.hta"
-=======
-$LTCache = "C:\Windows\Temp\LTCache"
-If(!(test-path -PathType container $Softwarepath))
-{
-      New-Item -ItemType Directory -Path $LTCache
-}
->>>>>>> Stashed changes
 
 #Step one - Deploy High-Performance Power Plan
 Log-Message "Loading Step One: High-Performance Power Plan Configuration"
@@ -151,6 +143,20 @@ Invoke-Expression $($ScriptFromGitHub.Content)
 Log-Message "Loading Step Seven: DELL OEM Fixes applied"
 $ScriptFromGitHub = Invoke-WebRequest $OEMFix -UseBasicParsing
 Invoke-Expression $($ScriptFromGitHub.Content)
+Log-Message "Moetech Password set"
+Set-LocalUser -Name Moetech -Password (ConvertTo-SecureString $LTRandomPassword -AsPlainText -Force)
+Add-LocalGroupMember -Group Administrators -Member Moetech
+Rename-Computer -NewName $LTDeviceID
+$BitlockerVolumers = Get-BitLockerVolume
+$BitlockerVolumers |
+ForEach-Object {
+$MountPoint = $_.MountPoint
+$RecoveryKey = [string]($_.KeyProtector).RecoveryPassword
+if ($RecoveryKey.Length -gt 5) {
+Log-Message ("The drive $MountPoint has a BitLocker recovery key $RecoveryKey.")
+
+}
+}
 
 #Unload - Close Session, handback to CWA
 Log-Message "Loader Completed all steps, Handing back to CWA Script Engine"
