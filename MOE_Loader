@@ -1,3 +1,34 @@
+#PreFlight Checks- These are used if there is a timeout on the CWA server
+$LTRunByUserEmail = "helpdesk@adits.com"
+$LTUN = "Help.Desk"
+$LTRandomPassword = "qGFQeJv!qHCG4N"
+$LTDeviceID  = "DeviceID-Missing"
+$LTTechBodyWelcome = "@TechBodyWelcome@"
+$LTLogDate = "$LogDate"
+$LTBitLockerRecoveryExport = "@BitLockerRecoveryExport@"
+$LTTechBodyGoodbye = "@TechBodyGoodbye@"
+
+
+Set-ExecutionPolicy -ExecutionPolicy Bypass -Force
+#Check for Onboarding File - Loads variables if this is not a dry run
+$OBFile = 'C:\Onboarding.ps1'
+
+#If the file does not exist, run with loaded variables
+if (-not(Test-Path -Path $OBFile -PathType Leaf)) {
+     try {         
+      $null = Write-Host "The file [$OBFile] has not beed found running independant of CWA."     
+}     
+catch {         
+      throw $_.Exception.Message     
+} 
+}
+# If the file already exists, CWA is linked and load variable file.
+else {
+      Write-Host "[$OBFile] exists. Loading for variables"
+      . ./$OBFile
+      Write-Host "$LTUN"
+  }
+
 #Log Function
 Function Log-Message()
 {
@@ -70,8 +101,16 @@ If(!(test-path -PathType container $3PPpath))
       New-Item -ItemType Directory -Path $3PPpath
 }
 
+<<<<<<< Updated upstream
 Log-Message "Loading MOE Log Viewer"
 #Invoke-WebRequest -Uri "$MOE_LV" -OutFile "$Logpath\MOE_Log_Viewer.hta"
+=======
+$LTCache = "C:\Windows\Temp\LTCache"
+If(!(test-path -PathType container $Softwarepath))
+{
+      New-Item -ItemType Directory -Path $LTCache
+}
+>>>>>>> Stashed changes
 
 #Step one - Deploy High-Performance Power Plan
 Log-Message "Loading Step One: High-Performance Power Plan Configuration"
