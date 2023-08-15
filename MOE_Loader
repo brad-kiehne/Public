@@ -34,7 +34,7 @@ $LTUN = "Help.Desk"
 $LTRandomPassword = "qGFQeJv!qHCG4N"
 $LTDeviceID  = "DeviceID-Missing"
 $LTTechBodyWelcome = "@TechBodyWelcome@"
-$LTLogDate = "$LogDate"
+$LTLogDate = "$LogFile"
 $LTBitLockerRecoveryExport = "@BitLockerRecoveryExport@"
 $LTTechBodyGoodbye = "@TechBodyGoodbye@"
 
