@@ -37,6 +37,7 @@ $LTTechBodyWelcome = "@TechBodyWelcome@"
 $LTLogDate = "C:\Moetech\Logs\$LogDate.txt"
 $LTBitLockerRecoveryExport = "@BitLockerRecoveryExport@"
 $LTTechBodyGoodbye = "@TechBodyGoodbye@"
+$LogDate = (Get-Date).tostring("ddMMyyyy")
 
 
 Set-ExecutionPolicy -ExecutionPolicy Bypass -Force
