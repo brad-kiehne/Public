@@ -49,6 +49,7 @@ if (-not(Test-Path -Path $OBFile -PathType Leaf)) {
       $null = Write-Host "The file [$OBFile] has not been found running independently of CWA."
       Invoke-WebRequest -Uri https://raw.githubusercontent.com/brad-kiehne/Public/main/MOE_Log_Viewer -OutFile "C:\Log_Viewer.hta"  
       $findString = '@LogDate@.txt'
+      $LogDate = (Get-Date).tostring("ddMMyyyy")
       $LTLogDate = "C:\Moetech\Logs\$LogDate.txt"
       (Get-Content "C:\Log_Viewer.hta") | foreach {$_.replace($findString,$LTLogDate)} | 
          Set-Content "C:\Log_Viewer2.hta"
