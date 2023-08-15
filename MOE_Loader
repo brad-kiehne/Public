@@ -51,7 +51,7 @@ if (-not(Test-Path -Path $OBFile -PathType Leaf)) {
       Invoke-WebRequest -Uri https://raw.githubusercontent.com/brad-kiehne/Public/main/MOE_Log_Viewer -OutFile "C:\Log_Viewer.hta"  
       $findString = '@LogDate@.txt'
       $LogDate = (Get-Date).tostring("ddMMyyyy")
-      $LTLogDate = "C:\Moetech\Logs\$LogDate.txt"
+      $LTLogDate = "C:\Moetech\Logs\(Get-Date).tostring("ddMMyyyy").txt"
       (Get-Content "C:\Log_Viewer.hta") | foreach {$_.replace($findString,$LTLogDate)} | 
          Set-Content "C:\Log_Viewer2.hta"
       Start-Process explorer.exe -ArgumentList C:\Log_Viewer2.hta
