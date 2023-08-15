@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="refresh" content="">
 <hta:application 
    APPLICATIONNAME="MOEBUILDERv9"
    ID="MOEBUILDERv9"
@@ -67,7 +68,7 @@
 </style>
 
 <script type="text/javascript">
-    var count = 240; // seconds
+    var count = 1200; // seconds
     var counter;
 
     function timer() {
@@ -77,6 +78,7 @@
             window.close(); // Close the HTA window after the countdown.
             return;
         }
+
         document.getElementById("timer").innerHTML = count + " secs"; // Display the remaining time in the span tag.
     }
 
@@ -86,26 +88,28 @@
         counter = setInterval(timer, 1000); // Start the timer
     }
 
-    window.setInterval("reloadIFrame();", 30000);
-    
-    function reloadIFrame() {
-     document.frames["list"].location.reload();
-    }
     window.onload = function() {
         onLoadHandler();
-    };
+    }
+
+ setInterval(refreshIframe, 10000);
+   function refreshIframe() {
+       var frame = document.getElementById("list");
+       frame.src = frame.src;
+}
 
 </script>
 </head>
 <body>
-    <h1>MOE Builder</h1>
+    <h1>MOE Builder Log Viewer</h1>
     <h2>Version 9</h2>
     <h3>ADITS - [auto close in <span id="timer"></span> ]</h3>
 	<p>&nbsp;</p>
 <p>README.txt</p>
 <p>&nbsp;</p>
-<div id="list">
-  <p align="center"><iframe src="11082023.txt" style="position:absolute; bottom:50px; height:100px; width:100%; border:1px solid #000000" scrolling="yes" frameborder="0"></iframe></p>
+<div>
+  <p align="center"><iframe id="list" src="@LogDate@.txt" style="position:absolute; bottom:50px; height:100px; width:100%; border:1px solid #000000" scrolling="yes" frameborder="0"></iframe></p>
+  
 
 </div>
 </body>
