@@ -46,17 +46,17 @@ $OBFile = 'C:\Onboarding.ps1'
 #If the file does not exist, run with loaded variables
 if (-not(Test-Path -Path $OBFile -PathType Leaf)) {
      try {         
-      $null = Write-Host "The file [$OBFile] has not beed found running independant of CWA."
+      $null = Write-Host "The file [$OBFile] has not been found running independently of CWA."
       Invoke-WebRequest -Uri https://raw.githubusercontent.com/brad-kiehne/Public/main/MOE_Log_Viewer -OutFile "C:\Log_Viewer.hta"  
-      $findString = '@LogDate@'
-      (Get-Content "C:\Log_Viewer.hta") | foreach {$_.replace($findString,$LogDate)}   
+      $findString = '@LogDate@.txt'
+      (Get-Content "C:\Log_Viewer.hta") | foreach {$_.replace($findString,$LogFile)}   
       Start-Process explorer.exe -ArgumentList C:\Log_Viewer.hta
 }     
 catch {         
       throw $_.Exception.Message     
 } 
 }
-# If the file already exists, CWA is linked and load variable file.
+# If the file already exists, CWA is linked and loads a variable file.
 else {
       Write-Host "[$OBFile] exists. Loading for variables"
       . ./$OBFile
