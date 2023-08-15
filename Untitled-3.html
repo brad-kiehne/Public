@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+<hta:application 
+   APPLICATIONNAME="MOEBUILDERv9"
+   ID="MOEBUILDERv9"
+   BORDERSTYLE="None"
+   CAPTION="No"
+   CONTEXTMENU="No"
+   INNERBORDER="No"
+   MAXIMIZEBUTTON="No"
+   MINIMIZEBUTTON="No"
+   NAVIGABLE="No"
+   SCROLL="No"
+   SCROLLFLAT="No"
+   SELECTION="No"
+   SHOWINTASKBAR="No"
+   MENUBAR="No"
+   SINGLEINSTANCE="Yes"
+   SYSMENU="No" ONTOP="Yes" WINDOWSTATE="Maximize"
+   />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MOEBUILDERv9</title>
+<style>
+    html, body {
+        background-color: #000033;
+        font-size: 90%;
+        
+        margin: 0;
+        padding: 0;
+        overflow: hidden; /* Hide scrollbars */
+    }
+
+    h1 {
+        font-family: Arial;
+        color: #007cd1;
+        font-size: 3em;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    h2 {
+        font-family: Arial;
+        color: #fff;
+        font-size: 1.5em;
+        text-align: center;
+    }
+
+    h3 {
+        font-family: Arial;
+        color: #666;
+        font-size: 1em;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+        opacity: 0.9; /* Adjust transparency here (0.0 to 1.0) */
+    }
+	
+	 /* Text box styles */
+    textarea {
+        width: 90%;
+        height: 200px;
+        margin: 20px auto;
+        background-color: #fff;
+        color: #000;
+        font-family: Arial, sans-serif;
+        font-size: 14px;
+        padding: 10px;
+        resize: none;
+    }
+</style>
+
+<script type="text/javascript">
+    var count = 60; // seconds
+    var counter;
+
+    function timer() {
+        count = count - 1;
+        if (count <= 0) {
+            clearInterval(counter);
+            window.close(); // Close the HTA window after the countdown.
+            return;
+        }
+        document.getElementById("timer").innerHTML = count + " secs"; // Display the remaining time in the span tag.
+    }
+
+    function onLoadHandler() {
+        window.moveTo(0, 0); // Move the window to the top-left corner
+        window.resizeTo(screen.width, screen.height); // Set the window size to fullscreen
+        counter = setInterval(timer, 1000); // Start the timer
+    }
+
+ function loadLogs() {
+var txt = '';
+var xmlhttp = new XMLHttpRequest();
+xmlhttp.onreadystatechange = function(){
+  if(xmlhttp.status == 200 && xmlhttp.readyState == 4){
+                document.getElementById("logText").value = xmlhttp.responseText;
+            }
+        };
+        xmlhttp.open("GET", "file://C:/Moetech/Logs/04082023.txt");
+        xmlhttp.send();
+    }
+
+    window.onload = function() {
+        onLoadHandler();
+        var img = new Image();
+        img.src = "file://C:/Moetech/aditstrim.jpg";
+        img.onload = function() {
+            document.body.appendChild(img);
+        };
+
+        loadLogs(); // Load logs initially
+
+        // Refresh logs every 1 second
+        setInterval(loadLogs, 1000);
+    };
+</script>
+</head>
+<body>
+    <h1>MOE Builder</h1>
+    <h2>Version 9</h2>
+    <h3>ADITS - [auto close in <span id="timer"></span> ]</h3>
+	<textarea id="logText" readonly></textarea>
+</body>
+</html>

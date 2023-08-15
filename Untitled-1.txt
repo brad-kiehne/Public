@@ -1,0 +1,327 @@
+    #################################################################################
+
+#Disables Student accounts for leavers and moves them to the leavers OU
+#Disables Parent Accounts, Strips groups, Moves to Parent Leavers OU
+
+    #################################################################################
+
+    #Import users to be disabled
+
+    ##############################################################################################################################################################################################
+    Import-Module ActiveDirectory
+    #Create working directory
+    #New-Item -ItemType directory "C:\LeaversExports"
+
+    Import-Csv "C:\Leavers.csv" | ForEach-Object {
+    $samAccountName = $_."samAccountName"
+    Get-ADUser -Identity $samAccountName | Disable-ADAccount
+    Write-host -ForegroundColor Green "$samAccountName Disabled"
+    }
+
+    ##############################################################################################################################################################################################
+    #Move users from SD1 to Leavers SD1
+    $SD1 = "OU=SD1,OU=Students,DC=Contoso,DC=ac,DC=uk"
+    $SD1Leavers = "OU=Leavers SD1,OU=Students,OU=Leavers,DC=Contoso,DC=ac,DC=uk"
+    Get-ADUser -filter {Enabled -eq $false } -SearchBase $SD1 -properties name,samaccountname,DistinguishedName,homedirectory,ProfilePath |select SamAccountName,homedirectory,ProfilePath | export-csv C:\LeaversExports\SD1_Leavers.csv -nti
+    Search-ADAccount –AccountDisabled –UsersOnly –SearchBase $SD1 | Move-ADObject –TargetPath $SD1Leavers
+    Write-Host -ForegroundColor Green "SD1 - Disabled users Moved"
+
+
+    # Remove User from All Group Memberships
+    $Users = Get-ADUser -SearchBase $SD1Leavers -Filter *
+    Get-ADGroup -Filter * | Remove-ADGroupMember -Members $users -Confirm:$False
+
+
+    $users = Get-ADUser -SearchBase $SD1Leavers -Filter * 
+
+    foreach($user in $users){
+      $groups = Get-ADPrincipalGroupMembership $user.SamAccountName | Where-Object {$_.name -NotLike '*Domain*'}
+      foreach($group in $groups){
+
+        Remove-ADGroupMember -Identity $group -Members $user -erroraction silentlycontinue
+
+      }
+    }
+    Write-Host -ForegroundColor Green "SD1 Leavers removed from all Groups"
+
+    #Move SD1 Leavers Home Area to Archive
+    $CSVPath      = 'C:\LeaversExports\SD1_Leavers.csv'
+    $NewHomeRoot  = '\\FS1\A-D Leavers$\Leavers 18-19$'
+    #$NewHomeLocal = 'D:\Data\Users'
+
+    $Users = Search-ADAccount -AccountDisabled -UsersOnly
+
+    foreach( $User in $Users ){
+        $NewHome   = Join-Path -Path $NewHomeRoot -ChildPath $User.SamAccountName
+
+        Robocopy.exe $User.homedirectory $NewHome /MIR /MOVE
+
+        }
+    Write-Host -ForegroundColor Green "All SD1 Leavers Home Folders Moved to Archive"
+
+    #Delete Profile Folders
+    $CSVPath = 'C:\LeaversExports\SD1_Leavers.csv'
+    $Users = Import-Csv $CSVPath
+    $samAccountName = $Users.SamAccountName
+    $profilepathv6 = $Users.ProfilePath + ".V6"
+    $profilepathv5 = $Users.ProfilePath + ".V5"
+
+    foreach( $User in $Users ){
+        if (Test-Path $profilepathv6){
+        Write-Host -ForegroundColor Yellow "$profilepathv6 Path Found"
+        Remove-Item ($profilepathv6)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv6 - has been deleted"
+        }
+        Else{
+
+        Write-Host -ForegroundColor Red ".V6 Path Not found - Skipped"
+
+        }
+        if (Test-Path $profilepathv5){
+        Write-Host -ForegroundColor Yellow "$profilepathv5 Path Found"
+        Remove-Item ($profilepathv5)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv5 - has been deleted"
+        }
+            Else{
+
+        Write-Host -ForegroundColor Red ".V5 Path Not found - Skipped"
+
+        }
+    }
+
+    Write-Host -BackgroundColor Green -ForegroundColor Black "Profiles deleted"
+    #Clean up working files
+    #Remove-Item "C:\LeaversExports" -Force -recurse
+
+    ##############################################################################################################################################################################################
+
+    ##############################################################################################################################################################################################
+    #Move users from SD2 to Leavers SD2
+    $SD2 = "OU=SD2,OU=Students,DC=Contoso,DC=ac,DC=uk"
+    $SD2Leavers = "OU=Leavers SD2,OU=Students,OU=Leavers,DC=Contoso,DC=ac,DC=uk"
+    Get-ADUser -filter {Enabled -eq $false } -SearchBase $SD2 -properties name,samaccountname,DistinguishedName,homedirectory,ProfilePath |select SamAccountName,homedirectory,ProfilePath | export-csv C:\LeaversExports\SD2_Leavers.csv -nti
+    Search-ADAccount –AccountDisabled –UsersOnly –SearchBase $SD2 | Move-ADObject –TargetPath $SD2Leavers
+    Write-Host -ForegroundColor Green "SD2 - Disabled users Moved"
+
+
+    # Remove User from All Group Memberships
+    $Users = Get-ADUser -SearchBase $SD2Leavers -Filter *
+    Get-ADGroup -Filter * | Remove-ADGroupMember -Members $users -Confirm:$False
+
+
+    $users = Get-ADUser -SearchBase $SD2Leavers -Filter * 
+
+    foreach($user in $users){
+      $groups = Get-ADPrincipalGroupMembership $user.SamAccountName | Where-Object {$_.name -NotLike '*Domain*'}
+      foreach($group in $groups){
+
+        Remove-ADGroupMember -Identity $group -Members $user -erroraction silentlycontinue
+
+      }
+    }
+    Write-Host -ForegroundColor Green "SD2 Leavers removed from all Groups"
+
+    #Move SD2 Leavers Home Area to Archive
+    $CSVPath      = 'C:\LeaversExports\SD2_Leavers.csv'
+    $NewHomeRoot  = '\\FS1\E-J Leavers$\Leavers 18-19'
+    #$NewHomeLocal = 'D:\Data\Users'
+
+    $Users = Import-Csv $CSVPath
+
+    foreach( $User in $Users ){
+        $NewHome   = Join-Path -Path $NewHomeRoot -ChildPath $User.SamAccountName
+
+        Robocopy.exe $User.homedirectory $NewHome /MIR /MOVE
+
+        }
+    Write-Host -ForegroundColor Green "All SD2 Leavers Home Folders Moved to Archive"
+
+    #Delete Profile Folders
+    $CSVPath = 'C:\LeaversExports\SD2_Leavers.csv'
+    $Users = Import-Csv $CSVPath
+    $samAccountName = $Users.SamAccountName
+    $profilepathv6 = $Users.ProfilePath + ".V6"
+    $profilepathv5 = $Users.ProfilePath + ".V5"
+
+    foreach( $User in $Users ){
+        if (Test-Path $profilepathv6){
+        Write-Host -ForegroundColor Yellow "$profilepathv6 Path Found"
+        Remove-Item ($profilepathv6)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv6 - has been deleted"
+        }
+        Else{
+
+        Write-Host -ForegroundColor Red ".V6 Path Not found - Skipped"
+
+        }
+        if (Test-Path $profilepathv5){
+        Write-Host -ForegroundColor Yellow "$profilepathv5 Path Found"
+        Remove-Item ($profilepathv5)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv5 - has been deleted"
+        }
+            Else{
+
+        Write-Host -ForegroundColor Red ".V5 Path Not found - Skipped"
+
+        }
+    }
+
+    Write-Host -BackgroundColor Green -ForegroundColor Black "Profiles deleted"
+    #Clean up working files
+    #Remove-Item "C:\LeaversExports" -Force -recurse
+
+    ##############################################################################################################################################################################################
+
+    ##############################################################################################################################################################################################
+    #Move users from SD3 to Leavers SD3
+    $SD3 = "OU=SD3,OU=Students,DC=Contoso,DC=ac,DC=uk"
+    $SD3Leavers = "OU=Leavers SD3,OU=Students,OU=Leavers,DC=Contoso,DC=ac,DC=uk"
+    Get-ADUser -filter {Enabled -eq $false } -SearchBase $SD3 -properties name,samaccountname,DistinguishedName,homedirectory,ProfilePath |select SamAccountName,homedirectory,ProfilePath | export-csv C:\LeaversExports\SD3_Leavers.csv -nti
+    Search-ADAccount –AccountDisabled –UsersOnly –SearchBase $SD3 | Move-ADObject –TargetPath $SD3Leavers
+    Write-Host -ForegroundColor Green "SD3 - Disabled users Moved"
+
+
+    # Remove User from All Group Memberships
+    $Users = Get-ADUser -SearchBase $SD3Leavers -Filter *
+    Get-ADGroup -Filter * | Remove-ADGroupMember -Members $users -Confirm:$False
+
+
+    $users = Get-ADUser -SearchBase $SD3Leavers -Filter * 
+
+    foreach($user in $users){
+      $groups = Get-ADPrincipalGroupMembership $user.SamAccountName | Where-Object {$_.name -NotLike '*Domain*'}
+      foreach($group in $groups){
+
+        Remove-ADGroupMember -Identity $group -Members $user -erroraction silentlycontinue
+
+      }
+    }
+    Write-Host -ForegroundColor Green "SD3 Leavers removed from all Groups"
+
+    #Move SD3 Leavers Home Area to Archive
+    $CSVPath      = 'C:\LeaversExports\SD3_Leavers.csv'
+    $NewHomeRoot  = '\\FS2\K-R Leavers$\Leavers 18-19'
+    #$NewHomeLocal = 'D:\Data\Users'
+
+    $Users = Import-Csv $CSVPath
+
+    foreach( $User in $Users ){
+        $NewHome   = Join-Path -Path $NewHomeRoot -ChildPath $User.SamAccountName
+
+        Robocopy.exe $User.homedirectory $NewHome /MIR /MOVE
+
+        }
+    Write-Host -ForegroundColor Green "All SD3 Leavers Home Folders Moved to Archive"
+
+    #Delete Profile Folders
+    $CSVPath = 'C:\LeaversExports\SD3_Leavers.csv'
+    $Users = Import-Csv $CSVPath
+    $samAccountName = $Users.SamAccountName
+    $profilepathv6 = $Users.ProfilePath + ".V6"
+    $profilepathv5 = $Users.ProfilePath + ".V5"
+
+    foreach( $User in $Users ){
+        if (Test-Path $profilepathv6){
+        Write-Host -ForegroundColor Yellow "$profilepathv6 Path Found"
+        Remove-Item ($profilepathv6)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv6 - has been deleted"
+        }
+        Else{
+
+        Write-Host -ForegroundColor Red ".V6 Path Not found - Skipped"
+
+        }
+        if (Test-Path $profilepathv5){
+        Write-Host -ForegroundColor Yellow "$profilepathv5 Path Found"
+        Remove-Item ($profilepathv5)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv5 - has been deleted"
+        }
+            Else{
+
+        Write-Host -ForegroundColor Red ".V5 Path Not found - Skipped"
+
+        }
+    }
+
+    Write-Host -BackgroundColor Green -ForegroundColor Black "Profiles deleted"
+    #Clean up working files
+    #Remove-Item "C:\LeaversExports" -Force -recurse
+
+    ##############################################################################################################################################################################################
+
+    ##############################################################################################################################################################################################
+    #Move users from SD4 to Leavers SD4
+    $SD4 = "OU=SD4,OU=Students,DC=Contoso,DC=ac,DC=uk"
+    $SD4Leavers = "OU=Leavers SD4,OU=Students,OU=Leavers,DC=Contoso,DC=ac,DC=uk"
+    Get-ADUser -filter {Enabled -eq $false } -SearchBase $SD4 -properties name,samaccountname,DistinguishedName,homedirectory,ProfilePath |select SamAccountName,homedirectory,ProfilePath | export-csv C:\LeaversExports\SD4_Leavers.csv -nti
+    Search-ADAccount –AccountDisabled –UsersOnly –SearchBase $SD4 | Move-ADObject –TargetPath $SD4Leavers
+    Write-Host -ForegroundColor Green "SD4 - Disabled users Moved"
+
+
+    # Remove User from All Group Memberships
+    $Users = Get-ADUser -SearchBase $SD4Leavers -Filter *
+    Get-ADGroup -Filter * | Remove-ADGroupMember -Members $users -Confirm:$False
+
+
+    $users = Get-ADUser -SearchBase $SD4Leavers -Filter * 
+
+    foreach($user in $users){
+      $groups = Get-ADPrincipalGroupMembership $user.SamAccountName | Where-Object {$_.name -NotLike '*Domain*'}
+      foreach($group in $groups){
+
+        Remove-ADGroupMember -Identity $group -Members $user -erroraction silentlycontinue
+
+      }
+    }
+    Write-Host -ForegroundColor Green "SD4 Leavers removed from all Groups"
+
+    #Move SD4 Leavers Home Area to Archive
+    $CSVPath      = 'C:\LeaversExports\SD4_Leavers.csv'
+    $NewHomeRoot  = '\\FS2\S-Z Leavers$\Leavers 18-19'
+    #$NewHomeLocal = 'D:\Data\Users'
+
+    $Users = Import-Csv $CSVPath
+
+    foreach( $User in $Users ){
+        $NewHome   = Join-Path -Path $NewHomeRoot -ChildPath $User.SamAccountName
+
+        Robocopy.exe $User.homedirectory $NewHome /MIR /MOVE
+
+        }
+    Write-Host -ForegroundColor Green "All SD4 Leavers Home Folders Moved to Archive"
+
+    #Delete Profile Folders
+    $CSVPath = 'C:\LeaversExports\SD4_Leavers.csv'
+    $Users = Import-Csv $CSVPath
+    $samAccountName = $Users.SamAccountName
+    $profilepathv6 = $Users.ProfilePath + ".V6
+    $profilepathv5 = $Users.ProfilePath + ".V5"
+
+    foreach( $User in $Users ){
+        if (Test-Path $profilepathv6){
+        Write-Host -ForegroundColor Yellow "$profilepathv6 Path Found"
+        Remove-Item ($profilepathv6)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv6 - has been deleted"
+        }
+        Else{
+
+        Write-Host -ForegroundColor Red ".V6 Path Not found - Skipped"
+
+        }
+        if (Test-Path $profilepathv5){
+        Write-Host -ForegroundColor Yellow "$profilepathv5 Path Found"
+        Remove-Item ($profilepathv5)-Force -Confirm:$false
+        Write-Host -ForegroundColor Green "$profilepathv5 - has been deleted"
+        }
+            Else{
+
+        Write-Host -ForegroundColor Red ".V5 Path Not found - Skipped"
+
+        }
+    }
+
+    Write-Host -BackgroundColor Green -ForegroundColor Black "Profiles deleted"
+    #Clean up working files
+    #Remove-Item "C:\LeaversExports" -Force -recurse
+
+    #################################################################################
