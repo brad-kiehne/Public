@@ -65,11 +65,8 @@ catch {
 # If the file already exists, CWA is linked and loads a variable file.
 else {
       Write-Host "[$OBFile] exists. Loading for variables"
-      Get-Content $OBFile
-      foreach ($string in $OBFile)
-{    
-	Write-Host $string	
-}
+      . $OBFile
+      Write-Host $LTRunByUserEmail $LTUN $LTRandomPassword $LTDeviceID
   }
 
 #GitHub URLs
