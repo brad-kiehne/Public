@@ -65,7 +65,7 @@ catch {
 # If the file already exists, CWA is linked and loads a variable file.
 else {
       Write-Host "[$OBFile] exists. Loading for variables"
-      . .\$OBFile
+      $OBFile
       Write-Host "$LTUN"
   }
 
