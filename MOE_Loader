@@ -66,7 +66,10 @@ catch {
 else {
       Write-Host "[$OBFile] exists. Loading for variables"
       Get-Content $OBFile
-      Write-Host "$LTUN"
+      foreach ($string in $OBFile)
+{    
+	Write-Host $string	
+}
   }
 
 #GitHub URLs
