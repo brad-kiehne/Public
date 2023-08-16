@@ -30,7 +30,7 @@ Function Log-Message()
 }
 #PreFlight Checks- These are used if there is a timeout on the CWA server
 $LTRunByUserEmail = "helpdesk@adits.com"
-$LTUN = "Help.Desk"
+$LTUN1 = "Help.Desk"
 $LTRandomPassword = "qGFQeJv!qHCG4N"
 $LTDeviceID  = "DeviceID-ERR"
 $LTTechBodyWelcome = "@TechBodyWelcome@"
