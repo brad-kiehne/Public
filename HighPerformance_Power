@@ -6,7 +6,7 @@ Log-Message "High Performance Power Plan Active"
 Log-Message "Setting Clock to E. Australia Daylight Time"
 Set-TimeZone -Name 'E. Australia Daylight Time'
 Log-Message "Clock Changed to E. Australia Daylight Time"
-Set-WinSystemLocale -SystemLocale 'en-US'
-Log-Message "EN-US set"
+Set-WinSystemLocale -SystemLocale 'en-AU'
+Log-Message "EN-AU set"
 Set-WinHomeLocation -GeoId '12'
 Log-Message "Location set to Australia"
