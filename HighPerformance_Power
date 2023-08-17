@@ -1,5 +1,12 @@
 Log-Message "Step One Script loaded"
-$powerPlan = Get-WmiObject -Namespace root\cimv2\power -Class Win32_PowerPlan -Filter "ElementName = 'High Performance'"
-
-$powerPlan.Activate()
+Invoke-WebRequest -Uri https://adits.blob.core.windows.net/automate/Labtech_Scripts/Installers/Moe_Builder/V8/ADITS_LAPTOP.pow -OutFile "C:\Moetech\Registry\ADITS_HighPerformance.pow"
+powercfg -import C:\Moetech\Registry\ADITS_HighPerformance.pow b5feb058-cd92-4780-bdc5-b4ca5bc9909e
+powercfg /SETACTIVE b5feb058-cd92-4780-bdc5-b4ca5bc9909e
 Log-Message "High Performance Power Plan Active"
+Log-Message "Setting Clock to E. Australia Daylight Time"
+Set-TimeZone -Name 'E. Australia Daylight Time'
+Log-Message "Clock Changed to E. Australia Daylight Time"
+Set-WinSystemLocale -SystemLocale 'en-US'
+Log-Message "EN-US set"
+Set-WinHomeLocation -GeoId '12'
+Log-Message "Location set to Australia"
