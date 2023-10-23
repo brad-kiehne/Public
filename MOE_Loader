@@ -111,6 +111,11 @@ If(!(test-path -PathType container $3PPpath))
       New-Item -ItemType Directory -Path $3PPpath
 }
 
+$Registrypath = "C:\Moetech\Registry"
+If(!(test-path -PathType container $Registrypath))
+{
+      New-Item -ItemType Directory -Path $3PPpath
+}
 Log-Message "Loading MOE Log Viewer"
 #Invoke-WebRequest -Uri "$MOE_LV" -OutFile "$Logpath\MOE_Log_Viewer.hta"
 
