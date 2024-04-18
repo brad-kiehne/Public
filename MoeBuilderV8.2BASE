@@ -9,10 +9,10 @@ $tweaks = @(
 
 	# 3rd Party Programs
 
-	"InstallChrome",
-	"InstallAdobe",
-	"InstallVLCMediaPlayer",
-	"InstallTeams",
+	#"InstallChrome",
+	#"InstallAdobe",
+	#"InstallVLCMediaPlayer",
+	#"InstallTeams",
 
 	# Windows Apps
 
