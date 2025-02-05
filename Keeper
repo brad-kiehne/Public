@@ -1,192 +1,142 @@
-###
-#Title: PM8 Auto Updater
-#Update date: 21/05/24
-#Purpose: Checks the local device PM8 version and compairs against the server version, updates accordingly
-#Author: Ayden Skewes
-###
-
-#Change log:
-#Improved self-checking for external devices
-#Bug resolved in fallback direct copy mode
-#User notifications for in progress, failed and successful
-#Improved logging for easier auditing
-
-
-#Variables
-$global:Script_Version = "v1.1"
-#------------------------------------------------------Changing these controls the script-----------------------------------------
-$global:Server_IP = "192.168.0.209" #PM8 server
-$global:ScriptLog = "C:\Program Files (x86)\WH Software\PM8\" + $env:computername + ".log" #local device log path
-$global:Enviroment_Path = "\\$Server_IP\BinShare\*" #Path to update files
-$global:Enviroment_Zip = "\\$Server_IP\BinShare\Compression\BinShare.zip" #Path to update files in compressed for, efficiency mode
-$global:Enviroment_Version = "\\$Server_IP\BinShare\PM8.exe" #Checked file by script for version comparison
-$global:Local_Path = "C:\Program Files (x86)\WH Software\PM8\Bin\" #Local path to install files
-$global:Local_PM8_Location = "C:\Program Files (x86)\WH Software\PM8\Bin\PM8.exe" #Local path to process
-$global:Local_PM8_Location_64 = "C:\Program Files\WH Software\PM8\Bin\PM8.exe" #Local path to process (64) although app is (x86)
-$global:Aggressive = "Yes" #Must be set to 'Yes' to force close PM8, if 'No' script will abort if PM8 is running.
-$global:Log_Max = 1 #Caps log size in MBs
-#---------------------------------------------------------------------------------------------------------------------------------
-
-#Time and date
-$Year = get-date -format yyyy
-$MonthShort = Get-Date (Get-Date) -Format MM
-$Day = get-date -format dd
-$DateTag = "($Day-$MonthShort-$Year)"
-
-#Required assembly modules (not used as script was made silent)
-Add-Type -AssemblyName PresentationFramework
-[void][Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic')
-
-#Nullify variables
-$Server_Check = $null
-$i = $null
-
-#Create primay log
-$LocationCheck = Test-Path -Path $ScriptLog
-if ($LocationCheck -like "False") {
-    "---Script Log [$Script_Version]---" | Out-File $ScriptLog -Append
-}
-
-#Check Log Size
-$Size = (Get-Item $ScriptLog).length / 1MB
-if ($Size -gt $Log_Max) {
-    Remove-Item $ScriptLog
-    "Previous log over $Log_Max MB and was deleted" | Out-file -FilePath $ScriptLog -Append
-}
-Else {
-    "Log file under $Log_Max MB and will be retained" | Out-file -FilePath $ScriptLog -Append
-}
-
-#User message for update beginning
-function Fun_MessageStarted {
-    msg * /TIME:10 "Promaster update in progress.`rPlease wait until update has completed.`rUsual update completion time is less than 1 minute."
-}
-
-#User message for failed update
-function Fun_MessageFailed {
-    msg * /TIME:0 "Promaster update has failed.`rPlease ensure you're connected to the company network.`rPlease contact ADITS to schedule another update."
-}
-
-#User message for successful update
-function Fun_MessageSuccess {
-    msg * /TIME:0 "Promaster update successful.`rPlease contact ADITS if you have any immediate issues."
-}
-
-#Connection check to PM8 server - failing script won't run
-while ($i -lt 3 -and $Server_Check -ne "Success") {
-    $Server_Check = Test-Connection $Server_IP -Count 3 -Quiet
-    if ($Server_Check -eq $True) {
-        $Server_Check = "Success"
+function Check-BrowserInstalled($browserName) {
+    $registryPath = switch ($browserName) {
+        "Chrome" { "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe" }
+        "Edge" { "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\msedge.exe" }
+        default { $null }
     }
-    else {
-        $i += 1
-        $Server_Check = "Error"
-        Start-Sleep -Seconds 30
+    
+    if ($null -eq $registryPath) {
+        Write-Host "Unknown browser: $browserName"
+        return $false
     }
-}
-if ($Server_Check -eq "Error") {
-    write-output "$DateTag Network connection to server failed. Script will exit!" | Out-File $ScriptLog -Append
-    Fun_MessageFailed
-    exit
-}
-if ($Server_Check -eq "Success") {
-    write-output "$DateTag Network connection to server successful" | Out-File $ScriptLog -Append
-    $i = $null
-}
-#Version check of current in use PM8 version - calls the version from PM8 server, to ensure registry issues didn't cause updates to false run or be missed
-$LocationCheck = Test-Path -Path $Enviroment_Version
-if ($LocationCheck -like "False") {
-    Write-Output "$DateTag Extraction of stats from PM8.exe in BinShare failed. Script will exit!" | Out-File $ScriptLog -Append
-    exit
-}
-else {
-    Write-Output "$DateTag Extraction of stats from PM8.exe in BinShare successful" | Out-File $ScriptLog -Append
-}
-$Enviroment_Version = (Get-Item $Enviroment_Version).VersionInfo | Select-Object FileVersion
-$Enviroment_Version = ($Enviroment_Version.FileVersion | Out-String).Trim()
-$LocationCheck = Test-Path -Path $Local_PM8_Location
-if ($LocationCheck -like "False") {
-    $LocationCheck = Test-Path -Path $Local_PM8_Location_64
-    if ($LocationCheck -like "False") {
-        Write-Output "$DateTag Extraction of stats from PM8.exe on local device failed. Script will exit!" | Out-File $ScriptLog -Append
-        exit
-    }
-    else {
-        Write-Output "$DateTag Extraction of stats from PM8.exe on local device sucessful" | Out-File $ScriptLog -Append
-        $Local_PM8 = (Get-Item $Local_PM8_Location_64).VersionInfo | Select-Object FileVersion | Format-Table -HideTableHeaders
-        $Local_PM8 = ($Local_PM8 | Out-String).Trim()
-        $Program_Path = $Local_PM8_Location_64
-    }
-}
-else {
-    Write-Output "$DateTag Extraction of stats from PM8.exe on local device sucessful" | Out-File $ScriptLog -Append
-    $Local_PM8 = (Get-Item $Local_PM8_Location).VersionInfo | Select-Object FileVersion | Format-Table -HideTableHeaders
-    $Local_PM8 = ($Local_PM8 | Out-String).Trim()
-    $Program_Path = $Local_PM8_Location
+    
+    return Test-Path $registryPath
 }
 
-#Compare versions and action - compares the local device version against server
-if ($Enviroment_Version -gt $Local_PM8) {
-    $Running_Check = Get-Process "PM8"
-    if ($Running_Check.ProcessName -like "PM8") {
-        if ($Aggressive -like "Yes") {
-            Get-Process "PM8" | Stop-Process -Force
-            Rename-Item -Path $Program_Path -NewName "PM8.exe.bak" -Force
+function Install-BrowserExtension($browserName, $registryPath, $valueName, $extensionValue) {
+    if (!(Check-BrowserInstalled $browserName)) {
+        Write-Host "$browserName is not installed on this machine."
+        return $false
+    }
+
+    try {
+        if (!(Test-Path $registryPath)) {
+            New-Item -Path $registryPath -Force | Out-Null
         }
-        else {
-            Write-Output "$DateTag PM8 is running and agressive flag is [off]. Script will exit!" | Out-File $ScriptLog -Append
-            Fun_MessageFailed
-            exit
+        New-ItemProperty -Path $registryPath -Name $valueName -Value $extensionValue -PropertyType String -Force | Out-Null
+        Write-Host "$browserName Extension registry entry created successfully."
+        return $true
+    } catch {
+        Write-Host "$browserName Extension installation failed. Error: $_"
+        return $false
+    }
+}
+
+function Check-RegistryInstall($browserName, $registryPath, $valueName, $extensionValue) {
+    if (Test-Path $registryPath) {
+        $value = Get-ItemProperty -Path $registryPath -Name $valueName -ErrorAction SilentlyContinue
+        if ($value -ne $null -and $value.$valueName -eq $extensionValue) {
+            Write-Host "$browserName Extension is present in registry."
+            return $true
         }
     }
-    Write-Output "$DateTag Update required as device [$Local_PM8] not on latest release [$Enviroment_Version]" | Out-File $ScriptLog -Append
-    #Advise user of update
-    Fun_MessageStarted
-    $LocationCheck = Test-Path -Path $Enviroment_Zip
-    if ($LocationCheck -like "True") {
-        Write-Output "$DateTag Compressed files found allowing default efficency mode" | Out-File $ScriptLog -Append
-        Expand-Archive -Path $Enviroment_Zip -DestinationPath $Local_Path -Force:$true
+    Write-Host "$browserName Extension is not present in registry."
+    return $false
+}
+
+function Check-ExtensionFolder($browserName, $extensionId) {
+    $userProfile = $env:USERPROFILE
+    $extensionPath = switch ($browserName) {
+        "Chrome" { "$userProfile\AppData\Local\Google\Chrome\User Data\Default\Extensions\$extensionId" }
+        "Edge" { "$userProfile\AppData\Local\Microsoft\Edge\User Data\Default\Extensions\$extensionId" }
     }
-    else {
-        Write-Output "$DateTag Compressed files not found forcing use of less efficient direct copy mode" | Out-File $ScriptLog -Append
-        $Enviroment_Path = Get-Item -Path $Enviroment_Path | Where-Object { ($_.Mode -notlike "d*") }
-        foreach ($Item in $Enviroment_Path) {
-            $Remote_Check = (Get-Item $Item).CreationTime
-            $Local_Check = (Get-Item $Local_Path$Item.Name).CreationTime
-            if ($Remote_Check -gt $Local_Check) {
-                Copy-Item -Path $Item -Destination $Local_Path -Force
-                if ($? -eq $False) {
-                    Start-Sleep -Seconds 2
-                    Copy-Item -Path $Item -Destination $Local_Path -Force
-                    if ($? -eq $False) {
-                        Write-Output "$DateTag Unable to copy [$Name_String] from server. Script will exit!" | Out-File $ScriptLog -Append
-                        Fun_MessageFailed
-                        exit
-                    }
-                }
-            }
-        }
+
+    if (Test-Path $extensionPath) {
+        Write-Host "$browserName extension folder exists."
+        return $true
+    } else {
+        Write-Host "$browserName extension folder does not exist."
+        return $false
     }
-    Remove-Item -Path $Program_Path".bak" -Force #Removes the block that stops the user running app when in middle of update
-    #Update the registry with new version - as this method doesn't actually complete an "installation"
-    $GUI_Key = Get-Package "Promaster*" | Select-Object FastPackageReference
-    $GUI_Key = $GUI_Key -replace ([regex]::Escape('hklm32\HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\')), ""
-    $GUI_Key = $GUI_Key -replace "@{FastPackageReference=", ""
-    $GUI_Key = $GUI_Key -replace "}}", "}"
-    $GUI_APP = Get-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\$GUI_Key"
-    Set-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\$GUI_Key" -Name "DisplayVersion" -Value $Enviroment_Version
-    #Set known old registry duplicate key
-    Set-ItemProperty -Path "HKLM:\SOFTWARE\WOW6432Node\Microsoft\Windows\CurrentVersion\Uninstall\{618E5CB0-4F5F-11E5-4823-12D1EDA60029}" -Name "DisplayVersion" -Value $Enviroment_Version
-    $GUI_APP = ($GUI_APP.DisplayVersion | Out-String).Trim()
-    Write-Output "$DateTag Device registry version change from [$GUI_APP] to [$Enviroment_Version]. Update complete!" | Out-File $ScriptLog -Append
 }
-elseif ($Enviroment_Version -eq $Local_PM8) {
-    Write-Output "$DateTag Local device [$Local_PM8] matches latest release [$Enviroment_Version]. Update not required!" | Out-File $ScriptLog -Append
-    exit
+
+# Chrome Extension Installation and Check
+$chromeRegistryPath = "HKLM:\Software\Policies\Google\Chrome\ExtensionInstallForcelist"
+$chromeValueName = "1"
+$chromeExtensionValue = "bfogiafebfohielmmehodmfbbebbbpei;https://clients2.google.com/service/update2/crx"
+$chromeExtensionId = "bfogiafebfohielmmehodmfbbebbbpei"
+
+$chromeInstalled = Check-BrowserInstalled "Chrome"
+$chromeSuccess = $false
+$chromeVerified = $false
+
+if ($chromeInstalled) {
+    $chromeSuccess = Install-BrowserExtension "Chrome" $chromeRegistryPath $chromeValueName $chromeExtensionValue
+    $chromeVerified = Check-RegistryInstall "Chrome" $chromeRegistryPath $chromeValueName $chromeExtensionValue
+} else {
+    Write-Host "Chrome is not installed. Skipping Chrome extension installation."
 }
-else {
-    Write-Output "$DateTag Local device [$Local_PM8] newer than latest release [$Enviroment_Version]. Server out of date!" | Out-File $ScriptLog -Append
-    exit
+
+# Edge Extension Installation and Check
+$edgeRegistryPath = "HKLM:\Software\Policies\Microsoft\Edge\ExtensionInstallForcelist"
+$edgeValueName = "1"
+$edgeExtensionValue = "lfochlioelphaglamdcakfjemolpichk;https://edge.microsoft.com/extensionwebstorebase/v1/crx"
+$edgeExtensionId = "lfochlioelphaglamdcakfjemolpichk"
+
+$edgeInstalled = Check-BrowserInstalled "Edge"
+$edgeSuccess = $false
+$edgeVerified = $false
+
+if ($edgeInstalled) {
+    $edgeSuccess = Install-BrowserExtension "Edge" $edgeRegistryPath $edgeValueName $edgeExtensionValue
+    $edgeVerified = Check-RegistryInstall "Edge" $edgeRegistryPath $edgeValueName $edgeExtensionValue
+} else {
+    Write-Host "Edge is not installed. This is unexpected as Edge should be present on all modern Windows systems."
 }
-Write-Output "----------Script Finished----------" | Out-File $ScriptLog -Append
-Fun_MessageSuccess
+
+# Wait and check for extension installation
+$maxAttempts = 5
+$attemptDelay = 60  # seconds
+
+for ($i = 1; $i -le $maxAttempts; $i++) {
+    Write-Host "Attempt $i of $maxAttempts to verify extension installation..."
+    
+    if ($chromeInstalled) {
+        $chromeExtensionInstalled = Check-ExtensionFolder "Chrome" $chromeExtensionId
+    }
+    
+    $edgeExtensionInstalled = Check-ExtensionFolder "Edge" $edgeExtensionId
+    
+    if ((!$chromeInstalled -or $chromeExtensionInstalled) -and $edgeExtensionInstalled) {
+        Write-Host "All extensions are installed successfully." -ForegroundColor Green
+        exit 0
+    }
+    
+    if ($i -lt $maxAttempts) {
+        Write-Host "Waiting for $attemptDelay seconds before next check..."
+        Start-Sleep -Seconds $attemptDelay
+    }
+}
+
+# Final check and exit
+if ((!$chromeInstalled -or ($chromeSuccess -and $chromeVerified)) -and ($edgeSuccess -and $edgeVerified)) {
+    Write-Host "All available browser extensions are successfully installed and verified in registry." -ForegroundColor Yellow
+    Write-Host "However, the extension folders were not found after multiple checks." -ForegroundColor Yellow
+    Write-Host "IMPORTANT: The browsers may need to be restarted for the extensions to be fully installed and activated." -ForegroundColor Yellow
+    Write-Host "Please follow these steps:" -ForegroundColor Yellow
+    Write-Host "1. Close all instances of the browser(s)" -ForegroundColor Yellow
+    Write-Host "2. Reopen the browser(s)" -ForegroundColor Yellow
+    Write-Host "3. Check if the extension appears in the browser UI" -ForegroundColor Yellow
+    Write-Host "4. If the extension doesn't appear, please wait for a few minutes and check again" -ForegroundColor Yellow
+    Write-Host "5. If the extension still doesn't appear, try signing out and signing back into the browser" -ForegroundColor Yellow
+    exit 0
+} else {
+    Write-Host "Extension installation or verification failed for one or both browsers." -ForegroundColor Red
+    if ($chromeInstalled -and (!$chromeSuccess -or !$chromeVerified)) {
+        Write-Host "Chrome extension installation or verification failed." -ForegroundColor Red
+    }
+    if (!$edgeSuccess -or !$edgeVerified) {
+        Write-Host "Edge extension installation or verification failed." -ForegroundColor Red
+    }
+    exit 1
+}
