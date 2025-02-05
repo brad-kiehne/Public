@@ -1,3 +1,5 @@
+winget install -e --id KeeperSecurity.KeeperDesktop --force
+
 function Check-BrowserInstalled($browserName) {
     $registryPath = switch ($browserName) {
         "Chrome" { "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe" }
