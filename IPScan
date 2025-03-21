@@ -11,8 +11,8 @@
 param([String]$variable1='') #indicates range to scan (eg. 172.10.10.1-172.10.10.254)
 
 # Customization options:
-$aipURL = "https://YourWebsite.com/AdvancedIPScanner.zip" # Download link for Advanced IP Scanner || You can install AIP on a device then zip C:\Program Files (x86)\Advanced IP Scanner to upload to your server
-$aipDirectory = "C:\YourDirectory" # Where to download and run Advanced IP Scanner
+$aipURL = "https://aditsautomation.blob.core.windows.net/installers/IP%20Scanner/AdvancedIPScannerPortable.zip" # Download link for Advanced IP Scanner || You can install AIP on a device then zip C:\Program Files (x86)\Advanced IP Scanner to upload to your server
+$aipDirectory = "C:\Moetech\Software" # Where to download and run Advanced IP Scanner
 
 function Search-AIP { Test-Path "$aipDirectory\AdvancedIPScanner\advanced_ip_scanner_console.exe" }
 
